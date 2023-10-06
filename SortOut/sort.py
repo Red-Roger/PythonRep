@@ -30,7 +30,16 @@ def copy_file (root_path, source_path, img_path):
             shutil.move(source_path,dest_path)
     else:
         root_path = source_path
+        print (source_path)
         findfiles (root_path)
+
+def del_dirs(path):
+    for d in os.listdir (path):
+        a = os.path.join (path, d)
+        if os.path.isdir (a):
+            del_dirs(a)
+            if not os.listdir(a):
+                os.rmdir(a)
 
 def makedirs(root_path, dir_path):
         new_dir_path = root_path + dir_path
@@ -79,15 +88,12 @@ def findfiles (root_path):
             makedirs(ROOT, img_path)
             copy_file (root_path, name, img_path)
  
-        else:
-            img_path = "/other"
-            makedirs(ROOT, img_path)
-            copy_file (root_path, name, img_path)
-        
 
 p = Path (path)
 if p.is_dir():
+    del_dirs(path)
     findfiles (path)
+    
 
 else:
     print ("the arg is not dir path")
