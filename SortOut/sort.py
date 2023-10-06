@@ -30,7 +30,6 @@ def copy_file (root_path, source_path, img_path):
             shutil.move(source_path,dest_path)
     else:
         root_path = source_path
-        print (source_path)
         findfiles (root_path)
 
 def del_dirs(path):
@@ -87,12 +86,17 @@ def findfiles (root_path):
             img_path = "/archives"
             makedirs(ROOT, img_path)
             copy_file (root_path, name, img_path)
+        
+        else:
+            img_path = "/other"
+            makedirs(ROOT, img_path)
+            copy_file (root_path, name, img_path)
  
 
 p = Path (path)
 if p.is_dir():
-    del_dirs(path)
     findfiles (path)
+    del_dirs(path)
     
 
 else:
