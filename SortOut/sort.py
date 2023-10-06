@@ -1,6 +1,5 @@
 import sys
 import shutil
-import os
 from pathlib import Path
 for arg in sys.argv:
     path = arg
