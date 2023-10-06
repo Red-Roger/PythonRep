@@ -1,0 +1,6 @@
+import re
+def normalize(name):
+    name = re.sub(r"[^+\w[.]", "_",name)
+    print (name)
+
+normalize("Gaby-Moreno---Postales---2012--amerikanskaya-pevica-iz-GvatemalyBlyuzsouldzhaz-08-Que-Voy-a-Hacermuzofon.com")
