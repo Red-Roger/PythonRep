@@ -27,7 +27,11 @@ def copy_file (root_path, source_path, img_path):
     p_file = Path (source_path)
     if p_file.is_file():
         if d_file.exists() == False:
-            shutil.move(source_path,dest_path)
+            if p_file.suffix[1:] in (archives):
+                shutil.unpack_archive (p_file.name, dest_path + "/" + p_file.stem)
+                os.remove(source_path)
+            else:
+                shutil.move(source_path,dest_path)
     else:
         root_path = source_path
         findfiles (root_path)
