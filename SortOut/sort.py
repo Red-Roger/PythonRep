@@ -8,17 +8,25 @@ for arg in sys.argv:
 
 ROOT = path
 
+CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
+TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
+               "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
+
 images = ("jpg", "png", "jpeg", "svg")
 video = ("avi", "mp4", "mov", "mkv")
 docs = ("doc", "docx", "txt", "pdf", "xlsx", "pptx")
 music = ("mp3", "ogg", "wav", "amr")
 archives = ("zip", "rar", "tar", "gz")
 
+
+
 def copy_file (root_path, source_path, img_path):
     dest_path = ROOT + img_path
+    d_file = Path (dest_path + "/" + source_path)
     source_path = root_path + "/" + source_path
     p_file = Path (source_path)
     if p_file.is_file():
+        if d_file.exists() == False:
             shutil.move(source_path,dest_path)
     else:
         root_path = source_path
@@ -31,6 +39,11 @@ def makedirs(root_path, dir_path):
 
 def normalize(name):
     name = re.sub(r"[^+\w[.]", "_",name)
+    TRANS = {}
+    for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+        TRANS[ord(c)] = l
+        TRANS[ord(c.upper())] = l.title()
+    name = name.translate(TRANS)
     return name
 
 def findfiles (root_path):
@@ -70,6 +83,7 @@ def findfiles (root_path):
             img_path = "/other"
             makedirs(ROOT, img_path)
             copy_file (root_path, name, img_path)
+        
 
 p = Path (path)
 if p.is_dir():
