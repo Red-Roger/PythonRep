@@ -1,12 +1,33 @@
-def make_request(keys, values):
-    res_vocab = {}
-    if len(keys) != len (values):
-        return res_vocab
-    else:
-        for k_value in keys:
-            res_vocab[k_value] = values[keys.index(k_value)]
-    return res_vocab
-       
-keys = ["name", "fname", "rates"]
-values = ["wiki", "pedia", [1, 4, 5, 6]]
-print (make_request (keys, values))
+def encode(data):
+    res = []
+
+    def recur (new_data):
+        key = False
+        if len(new_data) > 1:
+            count = 0
+            first = new_data [0]
+            c = 1
+            for value in new_data:
+                if value == first:
+                    count += 1
+                else:
+                    res.append(first)
+                    res.append(count)
+                    ind = new_data.index(value)
+                    new_data = new_data [ind:]
+                    break
+                m = len (new_data)
+                if c == m:
+                    res.append(first)
+                    res.append(count)
+                    key = True
+                c += 1
+            if key == False:               
+                recur(new_data)
+    recur(data)
+    return res
+
+
+data3 = ["X", "X", "X", "Z", "Z", "X", "X", "Y", "Y", "Y", "Z", "Z" ]
+
+print (encode(data3))
