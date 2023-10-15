@@ -3,8 +3,8 @@ from setuptools import setup
 setup(name='clean_folder',
       version='1',
       description='clean folder code',
-      url='http://github.com/dummy_user/useful',
-      author='Flying Circus',
-      author_email='flyingcircus@example.com',
+      url='https://github.com/Red-Roger/PythonRep/tree/main/clean_folder',
+      author='Red Roger',
+      author_email='postny@email.ua',
       license='MIT',
-      packages=['useful'])
+      packages=['clean_folder'])
