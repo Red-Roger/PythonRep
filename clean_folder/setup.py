@@ -8,5 +8,6 @@ setup (name='clean_folder',
       author_email='postny@email.ua',
       license='MIT',
       packages=find_namespace_packages(),
+      install_requires=['pyproject.toml'],
       entry_points={'console_scripts': ['clean-folder = clean_folder.clean:main']}
 )
