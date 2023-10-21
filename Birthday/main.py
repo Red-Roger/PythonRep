@@ -12,11 +12,14 @@ def get_birthdays_per_week(users):
 
     for value in users:
         user_birth = value ["birthday"]
+
         if today.month == 12 and today.day > 24 and user_birth.month == 1:
             user_birth_norm = user_birth.replace (year = today.year + 1)
         else:
             user_birth_norm = user_birth.replace (year = today.year)
+ 
         difference = user_birth_norm - today
+
         if difference.days >= 0 and difference.days < 8:
             index = user_birth_norm.weekday()
             if index == 5 or index == 6:
