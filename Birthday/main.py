@@ -2,11 +2,14 @@ from datetime import date, datetime
 
 
 def get_birthdays_per_week(users):
+    
+    WEEKNAMES = {0:"Monday", 1:"Tuesday", 2:"Wednesday", 3:"Thursday", 4:"Friday", 5:"Saturday", 6:"Sunday"}
     users_birth = {}
+    today = date.today()
+    
     if users == []:
         return users_birth
-    today = date.today()
-    WEEKNAMES = {0:"Monday", 1:"Tuesday", 2:"Wednesday", 3:"Thursday", 4:"Friday", 5:"Saturday", 6:"Sunday"}
+
     for value in users:
         user_birth = value ["birthday"]
         if today.month == 12 and today.day > 24 and user_birth.month == 1:
