@@ -1,36 +1,39 @@
 
-def add():
+def add(contacts):
     print ("Input Name and phone number, separated with a space:")
     input_str = input ()
     input_list = input_str.split()
     if len (input_list) == 2:
         contacts[input_list[0]] = input_list[1]
-        return "added successfully"
+        message = "added successfully"
     else:
-        return "The name and phone number should be separated with a space"
+        message = "The name and phone number should be separated with a space"
+    return contacts, message 
         
-def change():
+def change(contacts):
     print ("Input Name and phone number, separated with a space:")
     input_str = input ()
     input_list = input_str.split()
     if len (input_list) == 2:
         contacts[input_list[0]] = input_list[1]
-        return "changed successfully"
+        message = "changed successfully" 
     else:
-        return "The name and phone number should be separated with a space"
+        message = "The name and phone number should be separated with a space"
+    return contacts, message 
 
-def phone():
+def phone(contacts):
     print ("Input Name:")
     input_str = input ()
     if contacts.get (input_str):
-        return f"Phone: {contacts[input_str]}"
+        message = f"Phone: {contacts[input_str]}"
     else:
-        return "Can't find such a contact"
+        message = "Can't find such a contact"
+    return contacts, message
 
-contacts = {}
+
 def main():
+    contacts = {}
     while True:
-
         VCBLRY = {
             "Hello":"How can I help you?",
             "good bye":"Good bye!",
@@ -50,11 +53,14 @@ def main():
             index = 10
             print ("I don't understand this command")
         if index == 0: 
-            print (add())
+            contacts, message = add(contacts)
+            print (message)
         if index == 1: 
-            print (change())
+            contacts, message = change(contacts)
+            print (message)
         if index == 2: 
-            print (phone())
+            contacts, message = phone()
+            print (message)
         if index == 3: 
             print (contacts)
 main()
