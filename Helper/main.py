@@ -30,7 +30,13 @@ def phone(contacts):
         message = "Can't find such a contact"
     return contacts, message
 
+def input_error(main_func):
+    def inner():
+        main_func ()
+        return None
+    return inner
 
+@input_error
 def main():
     contacts = {}
     while True:
@@ -63,4 +69,5 @@ def main():
             print (message)
         if index == 3: 
             print (contacts)
-main()
+
+input_error (main())
