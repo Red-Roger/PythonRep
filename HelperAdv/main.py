@@ -25,16 +25,20 @@ def phone(contacts, input_str):
 
 
 def input_error(main_func):
+
     def inner():
         try:
             main_func ()
         except ValueError:
             print ("I don't understand this command")
+            input_error (main())
         except KeyError:
             print ("The name and phone number should be separated with a space")
+            input_error (main())
         except IndexError:
             print ("Can't find such a contact")
-        return None
+            input_error (main())
+
     return inner
 
 @input_error
@@ -79,6 +83,7 @@ def main():
             print (message)
         if index == 3: 
             print (contacts)
+
 
 
 input_error (main())
