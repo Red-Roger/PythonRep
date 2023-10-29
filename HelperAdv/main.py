@@ -66,7 +66,7 @@ def main():
             "close":"Good bye!",
             "exit":"Good bye!" }
         ACTION = ["add", "change", "phone", "show all"]
-        input_str = input ()
+        input_str = input (f"use command {ACTION}: ")
         input_str = input_str.lower()
         if input_str == ".":
             break
