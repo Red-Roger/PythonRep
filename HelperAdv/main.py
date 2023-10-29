@@ -1,21 +1,45 @@
+def input_error(func):
+
+    def inner(contacts, input_str):
+        try:
+            contacts, message = func (contacts, input_str)
+        except ValueError:
+            message = "Telephone number is not correct"
+        except KeyError:
+            message = "The name and phone number should be separated with a space"
+        except IndexError:
+            message = "Can't find such a contact"
+        return contacts, message
+    return inner
+
+
+@input_error
 def add(contacts, input_str):
     input_list = input_str.split()
     if len (input_list) == 2:
-        contacts[input_list[0]] = input_list[1]
-        message = "added successfully"
+        if input_list[1].isdigit() == False:
+            raise ValueError
+        else:
+            contacts[input_list[0]] = input_list[1]
+            message = "added successfully"
     else:
         raise KeyError
     return contacts, message
 
+@input_error 
 def change(contacts, input_str):
     input_list = input_str.split()
     if len (input_list) == 2:
-        contacts[input_list[0]] = input_list[1]
-        message = "changed successfully" 
+        if input_list[1].isdigit() == False:
+            raise ValueError
+        else:
+            contacts[input_list[0]] = input_list[1]
+            message = "changed successfully" 
     else:
         raise KeyError
     return contacts, message 
 
+@input_error 
 def phone(contacts, input_str):
     if contacts.get (input_str):
         message = f"Phone: {contacts[input_str]}"
@@ -24,24 +48,6 @@ def phone(contacts, input_str):
     return contacts, message
 
 
-def input_error(main_func):
-
-    def inner():
-        try:
-            main_func ()
-        except ValueError:
-            print ("I don't understand this command")
-            input_error (main())
-        except KeyError:
-            print ("The name and phone number should be separated with a space")
-            input_error (main())
-        except IndexError:
-            print ("Can't find such a contact")
-            input_error (main())
-
-    return inner
-
-@input_error
 def main():
     contacts = {}
     message =""
@@ -62,7 +68,11 @@ def main():
         elif VCBLRY.get(input_str):
             print (VCBLRY[input_str])
             break
-        index = ACTION.index(input_str)
+        if input_str in ACTION:
+            index = ACTION.index(input_str)
+        else:
+            index = 100
+            print ("I don't understand this command")
         if index == 0:
             message ="Input Name and phone number, separated with a space:"
             print (message)
@@ -79,11 +89,10 @@ def main():
             message ="Input Name:"
             print (message)
             input_str = input ()
-            contacts, message = phone()
+            contacts, message = phone(contacts, input_str)
             print (message)
         if index == 3: 
             print (contacts)
 
 
-
-input_error (main())
+main()
