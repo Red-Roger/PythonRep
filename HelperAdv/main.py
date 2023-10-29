@@ -17,10 +17,14 @@ def input_error(func):
 def add(contacts, input_str):
     input_list = input_str.split()
     if len (input_list) == 2:
-        if input_list[1].isdigit() == False:
+        name = input_list[0]
+        phone_number = input_list[1]
+        if phone_number[0] == "+":
+            phone_number = phone_number[1:]
+        if phone_number.isdigit() == False:
             raise ValueError
         else:
-            contacts[input_list[0]] = input_list[1]
+            contacts[name] = phone_number
             message = "added successfully"
     else:
         raise KeyError
@@ -30,10 +34,14 @@ def add(contacts, input_str):
 def change(contacts, input_str):
     input_list = input_str.split()
     if len (input_list) == 2:
-        if input_list[1].isdigit() == False:
+        name = input_list[0]
+        phone_number = input_list[1]
+        if phone_number[0] == "+":
+            phone_number = phone_number[1:]
+        if phone_number.isdigit() == False:
             raise ValueError
         else:
-            contacts[input_list[0]] = input_list[1]
+            contacts[name] = phone_number
             message = "changed successfully" 
     else:
         raise KeyError
@@ -94,5 +102,5 @@ def main():
         if index == 3: 
             print (contacts)
 
-
-main()
+if __name__ == "__main__":
+    main()
