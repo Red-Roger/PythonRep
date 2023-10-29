@@ -59,6 +59,7 @@ def phone(contacts, input_str):
 
 
 def main():
+
     contacts = {}
     message =""
   
@@ -111,8 +112,11 @@ def main():
             input_str = input ()
             contacts, message = phone(contacts, input_str)
             print (message)
-        if index == 3: 
-            print (contacts)
+        if index == 3:
+            if contacts:
+                print (contacts)
+            else:
+                print ("No contacts saved yet")
 
 if __name__ == "__main__":
     main()
