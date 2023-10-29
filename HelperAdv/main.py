@@ -30,6 +30,7 @@ def add(contacts, input_str):
         raise KeyError
     return contacts, message
 
+
 @input_error 
 def change(contacts, input_str):
     input_list = input_str.split()
@@ -47,6 +48,7 @@ def change(contacts, input_str):
         raise KeyError
     return contacts, message 
 
+
 @input_error 
 def phone(contacts, input_str):
     if contacts.get (input_str):
@@ -59,7 +61,9 @@ def phone(contacts, input_str):
 def main():
     contacts = {}
     message =""
+  
     while True:
+
 
         VCBLRY = {
             "hello":"How can I help you?",
@@ -74,6 +78,8 @@ def main():
         allowed_action += ")"
         input_str = input (f"use command {allowed_action}: ")
         input_str = input_str.lower()
+
+
         if input_str == ".":
             break
         if input_str == "hello":
