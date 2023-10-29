@@ -60,13 +60,19 @@ def main():
     contacts = {}
     message =""
     while True:
+
         VCBLRY = {
             "hello":"How can I help you?",
             "good bye":"Good bye!",
             "close":"Good bye!",
             "exit":"Good bye!" }
         ACTION = ["add", "change", "phone", "show all"]
-        input_str = input (f"use command {ACTION}: ")
+        allowed_action = "("
+        for i in range (len(ACTION)):
+            allowed_action = allowed_action + ACTION[i] +", "
+        allowed_action = allowed_action [:-2]
+        allowed_action += ")"
+        input_str = input (f"use command {allowed_action}: ")
         input_str = input_str.lower()
         if input_str == ".":
             break
