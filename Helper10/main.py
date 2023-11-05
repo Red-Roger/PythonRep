@@ -15,16 +15,17 @@ class Name(Field):
         return self.names
 
 class Phone(Field):
-    def check_phone (self, phone):
+    def __init__(self, value):
+        self.value = value
         try:
-            if phone.isnumeric() and len (phone) == 10:
-                return phone
+            if value.isnumeric() and len (value) == 10:
+                return None
             else:
                 raise ValueError
         except ValueError:
             print ("The tel. number must be 10 digit length")
-            phone = ""
-            return phone
+            self.value = None
+
 
 class Record:
     def __init__(self, name):
@@ -32,10 +33,12 @@ class Record:
         self.phones = []
 
     def add_phone(self,phone):
-        check_phone = Phone(self)
-        phone = check_phone.check_phone (phone)
-        if phone:
-            self.phones.append(phone)
+        new_phone = Phone (phone)
+        print (new_phone)
+        #check_phone = Phone(self)
+        #phone = check_phone.check_phone (phone)
+        #if phone:
+        #    self.phones.append(phone)
     
     def add_phone_simple(self,phone):
             tel = ""
@@ -103,7 +106,7 @@ class AddressBook(UserDict):
     def add_record(self, record):
 
         name = record.name
-        book [name] = record.phones
+        book.data [name] = record.phones
 
 
     def find (self, search_name):
@@ -135,9 +138,9 @@ book = AddressBook()
 
     # Створення запису для John
 john_record = Record("John")
-john_record.add_phone("1234567890")
+john_record.add_phone("12345d67890")
 john_record.add_phone("5555555555")
-
+"""
     # Додавання запису John до адресної книги
 book.add_record(john_record)
 
@@ -165,6 +168,10 @@ for name, record in book.data.items():
     # Видалення запису Jane
 book.delete("Jane")
 
+
+
 for name, record in book.data.items():
     print ("After drop")
     print(name, record)
+
+"""
