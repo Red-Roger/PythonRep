@@ -159,10 +159,12 @@ found_phone = john.find_phone("5555555555")
 print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
     # Виведення всіх записів у книзі
-
+for name, record in book.data.items():
+    print(name, record)
 
     # Видалення запису Jane
 book.delete("Jane")
 
 for name, record in book.data.items():
+    print ("After drop")
     print(name, record)
