@@ -55,7 +55,7 @@ class Record:
         list = self.phones
         for value in list:
             if value == phone:
-                return phone
+                return value
         return None
             
     def edit_phone (self, phone_orig, phone_edited):
@@ -99,9 +99,6 @@ class Record:
 
 class AddressBook(UserDict):
 
-    # book = {}
-    # name = ""
-    # addr_phone = ""
 
     def add_record(self, record):
 
@@ -114,7 +111,7 @@ class AddressBook(UserDict):
             if search_name == str(name):
                 search_rec = Record (search_name)
                 search_rec.phones = record
-                return search_rec
+                return  search_rec
         else:
             return None
 
