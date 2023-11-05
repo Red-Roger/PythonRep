@@ -119,9 +119,16 @@ class AddressBook(UserDict):
             return None
 
             
-    def delete (self, name):
+    def delete (self, search_name):
+        key = 0
         try:
-            del book[name]
+            for name in book.data.keys():
+                if search_name == str(name):
+                    del book[name]
+                    key = 1
+                    break
+            if key == 0:
+                raise KeyError
         except KeyError:
             print ("no such name")
 
