@@ -42,19 +42,6 @@ class Record:
         new_phone = Phone (phone)
         if new_phone.value:
             self.phones.append(new_phone.value)
-    
-    def add_phone_simple(self,phone):
-            tel = ""
-            key = 0
-            for char in phone:
-                if char.isnumeric():
-                    tel += char
-                    key = 1
-                elif key == 1:
-                    self.phones.append(tel)
-                    key = 0
-                    tel = ""
-            self.phones.append(tel)
 
     def find_phone (self, phone):
 
@@ -103,17 +90,13 @@ class AddressBook(UserDict):
 
     def add_record(self, record):
 
-        self.data [str (record.name)] = record.phones
+        self.data [record.name.value] = record
 
 
     def find (self, search_name):
         for name, record in self.data.items():
-            if search_name == str(name):
-                search_rec = Record (search_name)
-                search_rec.phones = record
-                return  search_rec
-        else:
-            return None
+            if search_name == name:
+                return record
 
             
     def delete (self, search_name):
@@ -147,11 +130,14 @@ jane_record = Record("Jane")
 jane_record.add_phone("9876543210")
 book.add_record(jane_record)
 
-for name, record in book.data.items():
-    print(name, record)
+#for name, record in book.data.items():
+#    print(name, record)
 
     # Знаходження та редагування телефону для John
 john = book.find("John")
+print (type (john))
+
+
 john.edit_phone("1234567890", "1112223333")
 
 
@@ -171,8 +157,4 @@ for name, record in book.data.items():
 book.delete("Jane")
 
 
-
-for name, record in book.data.items():
-    print ("After drop")
-    print(name, record)
 
