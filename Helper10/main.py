@@ -130,14 +130,8 @@ jane_record = Record("Jane")
 jane_record.add_phone("9876543210")
 book.add_record(jane_record)
 
-#for name, record in book.data.items():
-#    print(name, record)
-
     # Знаходження та редагування телефону для John
 john = book.find("John")
-print (type (john))
-
-
 john.edit_phone("1234567890", "1112223333")
 
 
