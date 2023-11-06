@@ -17,18 +17,19 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         self.value = value
+        
+        self.check()
 
-    def __str__(self):
-        print ("dgsdgsdgsgsgsgd")
-        return str(self.value)
+    def check(self):
         try:
-            if value.isnumeric() and len (value) == 10:
-                return value
+            if self.value.isnumeric() and len (self.value) == 10:
+                return self
             else:
+                self.value = None
                 raise ValueError
         except ValueError:
-            print ("The tel. number must be 10 digit length////")
-            return None
+            print ("The tel. number must be 10 digit length")
+            return self
             
 
 
@@ -39,8 +40,8 @@ class Record:
 
     def add_phone(self,phone):
         new_phone = Phone (phone)
-        if new_phone:
-            self.phones.append(new_phone)
+        if new_phone.value:
+            self.phones.append(new_phone.value)
     
     def add_phone_simple(self,phone):
             tel = ""
@@ -56,29 +57,32 @@ class Record:
             self.phones.append(tel)
 
     def find_phone (self, phone):
-        list = []
-        list = self.phones
-        for value in list:
-            if value == phone:
-                return value
+
+        phone2find = Phone(phone)
+        
+        for value in self.phones:
+            if value == phone2find.value:
+                return phone2find
         return None
             
     def edit_phone (self, phone_orig, phone_edited):
-        list = []
-        list = self.phones
-        check_phone = Phone(phone_edited)
-        if check_phone:
-            for value in list:
-                try:
-                    if value == phone_orig:
-                        index = list.index(value)
-                        self.phones[index] = phone_edited
+        
+        phone_orig = Phone(phone_orig)
+        phone_edited = Phone(phone_edited)
+        key = 0
+        if phone_orig.value and phone_edited.value:
+            try:
+                for value in self.phones:
+                    if value == phone_orig.value:
+                        index =self.phones.index(value)
+                        self.phones[index] = phone_edited.value
+                        key = 1
                         break
-                    else:
-                        raise ValueError
-                except ValueError:
+                if key == 0:
+                    raise ValueError
+            except ValueError:
                     print ("no such phone")
-
+ 
     
     def remove_phone(self, phone_2_remove):
         list = []
@@ -89,7 +93,6 @@ class Record:
                 if value == phone_2_remove:
                     index = list.index(value)
                     self.phones.pop(index)
-                    book.add_record(self)
                     found = 1
                     break
             if found == 0:
@@ -107,11 +110,12 @@ class AddressBook(UserDict):
     def add_record(self, record):
 
         name = record.name
-        book.data [name] = record.phones
+        self.data [name] = record.phones
+
 
 
     def find (self, search_name):
-        for name, record in book.data.items():
+        for name, record in self.data.items():
             if search_name == str(name):
                 search_rec = Record (search_name)
                 search_rec.phones = record
@@ -123,9 +127,9 @@ class AddressBook(UserDict):
     def delete (self, search_name):
         key = 0
         try:
-            for name in book.data.keys():
+            for name in self.data.keys():
                 if search_name == str(name):
-                    del book[name]
+                    del self.data[name]
                     key = 1
                     break
             if key == 0:
@@ -152,7 +156,7 @@ book.add_record(jane_record)
 
 for name, record in book.data.items():
     print(name, record)
-"""
+
     # Знаходження та редагування телефону для John
 john = book.find("John")
 john.edit_phone("1234567890", "1112223333")
@@ -178,4 +182,3 @@ book.delete("Jane")
 for name, record in book.data.items():
     print ("After drop")
     print(name, record)
-"""
