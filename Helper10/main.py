@@ -103,9 +103,7 @@ class AddressBook(UserDict):
 
     def add_record(self, record):
 
-        name = record.name
-        self.data [name] = record.phones
-
+        self.data [str (record.name)] = record.phones
 
 
     def find (self, search_name):
