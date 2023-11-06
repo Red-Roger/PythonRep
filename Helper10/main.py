@@ -21,17 +21,17 @@ class Phone(Field):
         self.check()
 
     def check(self):
-        try:
-            if self.value.isnumeric() and len (self.value) == 10:
-                return self
-            else:
-                self.value = None
-                raise ValueError
-        except ValueError:
-            print ("The tel. number must be 10 digit length")
+        if self.value.isnumeric() and len (self.value) == 10:
             return self
-            
+        else:
+            self.value = None
+            raise  Error (("The tel. number must be 10 digit length"))
 
+            
+class Error(ValueError):
+    def __init__(self, message):
+        super().__init__(message)
+        self.msg = message
 
 class Record:
     def __init__(self, name):
@@ -71,7 +71,6 @@ class Record:
         phone_edited = Phone(phone_edited)
         key = 0
         if phone_orig.value and phone_edited.value:
-            try:
                 for value in self.phones:
                     if value == phone_orig.value:
                         index =self.phones.index(value)
@@ -79,26 +78,21 @@ class Record:
                         key = 1
                         break
                 if key == 0:
-                    raise ValueError
-            except ValueError:
-                    print ("no such phone")
- 
+                    raise Error ("no such phone")
+
     
     def remove_phone(self, phone_2_remove):
         list = []
         list = self.phones
         found = 0
-        try:
-            for value in list:
-                if value == phone_2_remove:
-                    index = list.index(value)
-                    self.phones.pop(index)
-                    found = 1
-                    break
-            if found == 0:
-                raise ValueError
-        except ValueError:
-                print ("no such phone")
+        for value in list:
+            if value == phone_2_remove:
+                index = list.index(value)
+                self.phones.pop(index)
+                found = 1
+                break
+        if found == 0:
+            raise ValueError ("no such phone")
 
     
     def __str__(self):
@@ -141,6 +135,7 @@ class AddressBook(UserDict):
 # Створення нової адресної книги
 book = AddressBook()
 
+
     # Створення запису для John
 john_record = Record("John")
 john_record.add_phone("1234567890")
@@ -182,3 +177,4 @@ book.delete("Jane")
 for name, record in book.data.items():
     print ("After drop")
     print(name, record)
+
