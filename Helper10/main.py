@@ -44,12 +44,10 @@ class Record:
             self.phones.append(new_phone.value)
 
     def find_phone (self, phone):
-
-        phone2find = Phone(phone)
         
         for value in self.phones:
-            if value == phone2find.value:
-                return phone2find
+            if value == phone:
+                return Phone(phone)
         return None
             
     def edit_phone (self, phone_orig, phone_edited):
