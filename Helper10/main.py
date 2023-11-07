@@ -16,12 +16,13 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        self.value = value
         
+        self.checked = value
         self.check()
 
     def check(self):
-        if self.value.isnumeric() and len (self.value) == 10:
+        if self.checked.isnumeric() and len (self.checked) == 10:
+            self.value = self.checked
             return self
         else:
             self.value = None
