@@ -99,17 +99,10 @@ class AddressBook(UserDict):
 
             
     def delete (self, search_name):
-        key = 0
-        try:
-            for name in self.data.keys():
-                if search_name == str(name):
-                    del self.data[name]
-                    key = 1
-                    break
-            if key == 0:
-                raise KeyError
-        except KeyError:
-            print ("no such name")
+        for name in self.data.keys():
+            if search_name == str(name):
+                del self.data[name]
+                break
 
 
 # Створення нової адресної книги
