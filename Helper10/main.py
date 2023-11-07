@@ -42,13 +42,13 @@ class Record:
     def add_phone(self,phone):
         new_phone = Phone (phone)
         if new_phone.value:
-            self.phones.append(new_phone.value)
+            self.phones.append(new_phone)
 
     def find_phone (self, phone):
         
         for value in self.phones:
-            if value == phone:
-                return Phone(phone)
+            if value.value == phone:
+                return value
         return None
             
     def edit_phone (self, phone_orig, phone_edited):
@@ -58,31 +58,32 @@ class Record:
         key = 0
         if phone_orig.value and phone_edited.value:
                 for value in self.phones:
-                    if value == phone_orig.value:
-                        index =self.phones.index(value)
-                        self.phones[index] = phone_edited.value
+                    if value.value == phone_orig.value:
+                        index = self.phones.index(value)
+                        self.phones[index] = phone_edited
                         key = 1
                         break
                 if key == 0:
                     raise Error ("no such phone")
 
     
-    def remove_phone(self, phone_2_remove):
-        list = []
-        list = self.phones
-        found = 0
-        for value in list:
-            if value == phone_2_remove:
-                index = list.index(value)
-                self.phones.pop(index)
-                found = 1
-                break
-        if found == 0:
-            raise ValueError ("no such phone")
+    def remove_phone(self, phone):
 
-    
+        remove_phone = Phone(phone)
+        key = 0
+        if remove_phone.value:
+                for value in self.phones:
+                    if value.value == remove_phone.value:
+                        index = self.phones.index(value)
+                        self.phones.pop (index)
+                        key = 1
+                        break
+                if key == 0:
+                    raise Error ("no such phone")
+
+
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p for p in self.phones)}"
+       return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
 
@@ -122,6 +123,7 @@ jane_record = Record("Jane")
 jane_record.add_phone("9876543210")
 book.add_record(jane_record)
 
+
     # Знаходження та редагування телефону для John
 john = book.find("John")
 john.edit_phone("1234567890", "1112223333")
@@ -135,12 +137,11 @@ found_phone = john.find_phone("5555555555")
 print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
 
+
     # Виведення всіх записів у книзі
 for name, record in book.data.items():
     print(name, record)
 
     # Видалення запису Jane
 book.delete("Jane")
-
-
 
