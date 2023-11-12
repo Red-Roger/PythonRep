@@ -26,7 +26,7 @@ class Phone(Field):
             return self
         else:
             self.value = None
-            raise  Error (("The tel. number must be 10 digit length"))
+            raise  Error ("The tel. number must be 10 digit length")
 
             
 class Error(ValueError):
