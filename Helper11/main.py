@@ -150,6 +150,9 @@ class Record:
     
 class AddressBook(UserDict):
 
+    def init_count (self, max_recs):
+        self.max_recs = max_recs
+
 
     def add_record(self, record):
 
@@ -167,11 +170,26 @@ class AddressBook(UserDict):
             if search_name == str(name):
                 del self.data[name]
                 break
+    
+    def __iter__(self):
+        return Iterable()
 
+
+class Iterable:
+    def __init__(self, max_recs):
+        self.max_recs = max_recs
+        self.current_index = 0      
+
+    def __next__(self):
+        if self.current_index < self.max_recs:
+            self.current_index += 1
+            print ("zxczxczxczxczxczxc")
+            return self.records[self.current_index-1]
+        raise StopIteration
 
 # Створення нової адресної книги
 book = AddressBook()
-
+book.init_count(1)
 
     # Створення запису для John
 john_record = Record("John", "1974-11-27")
