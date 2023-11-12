@@ -1,9 +1,18 @@
 from collections import UserDict
+import datetime
 
 
 class Field:
     def __init__(self, value):
         self.value = value
+    
+    @property
+    def value(self):
+        return self.__value
+    
+    @value.setter
+    def value  (self, value):
+        self.__value = value
 
     def __str__(self):
         return str(self.value)
@@ -16,9 +25,19 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        
-        self.checked = value
-        self.check()
+        self.value = value
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value):
+        if value.isnumeric() and len (value) == 10:
+            self.__value = value
+        else:
+            self.__value = None
+            raise  Error (("The tel. number must be 10 digit length"))
 
     def check(self):
         if self.checked.isnumeric() and len (self.checked) == 10:
@@ -35,9 +54,26 @@ class Error(ValueError):
         self.msg = message
 
 class Record:
-    def __init__(self, name):
+    def __init__(self, name, birthday=None):
         self.name = Name(name)
         self.phones = []
+        self.birthday = birthday
+
+    @property
+    def birthday(self):
+        return self.__birthday
+
+    @birthday.setter
+    def birthday(self, birthday):
+        
+        if  birthday:
+            try:
+                self.__birthday = datetime.datetime.strptime (birthday, "%Y-%m-%d")
+                self.__birthday = self.__birthday.date()
+            except ValueError:
+                self.__birthday = None
+                print (f"Birthday format for {self.name} doesnt't match (YYYY-MM-DD)")
+
 
     def add_phone(self,phone):
         new_phone = Phone (phone)
@@ -80,11 +116,38 @@ class Record:
                         break
                 if key == 0:
                     raise Error ("no such phone")
+                
+    def days_to_birthday(self):
+        def __str__(self):
+            line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+            try:
+                if self.birthday:
+                    line += f"; Birthday: {self.birthday}"
+            except AttributeError:
+                pass
+            return line
+
+        if self.birthday:
+            today = datetime.date.today()
+            user_birth_norm = self.birthday.replace (year = today.year)
+            if (user_birth_norm - today).days < 0: 
+                user_birth_norm = self.birthday.replace (year = today.year+1)
+            birth_diff = user_birth_norm - today
+            return birth_diff.days
+        else:
+            return f"No valid birthdate for {self.name} to compare"
+
 
 
     def __str__(self):
-       return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-
+        line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        try:
+            if self.birthday:
+                line += f"; Birthday: {self.birthday}"
+        except AttributeError:
+            pass
+        return line
+    
 class AddressBook(UserDict):
 
 
@@ -111,7 +174,7 @@ book = AddressBook()
 
 
     # Створення запису для John
-john_record = Record("John")
+john_record = Record("John", "1974-11-27")
 john_record.add_phone("1234567890")
 john_record.add_phone("5555555555")
 
@@ -119,7 +182,7 @@ john_record.add_phone("5555555555")
 book.add_record(john_record)
 
     # Створення та додавання нового запису для Jane
-jane_record = Record("Jane")
+jane_record = Record("Jane", "1974-01-25")
 jane_record.add_phone("9876543210")
 book.add_record(jane_record)
 
@@ -144,4 +207,7 @@ for name, record in book.data.items():
 
     # Видалення запису Jane
 book.delete("Jane")
+
+print (john_record.days_to_birthday())
+print (jane_record.days_to_birthday())
 
