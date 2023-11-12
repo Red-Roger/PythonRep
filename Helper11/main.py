@@ -169,12 +169,17 @@ class AddressBook(UserDict):
                 break
     
     def iterator (self, max_recs):
+ 
         self.max_recs = max_recs
-        index = 0
-        for record in book.data.items():
-            if index < max_recs:
-                yield (record)
-                index +=1
+        self.index = 0
+    
+    def __next__ (self):
+        
+        if self.index < self.max_recs: 
+            self.index += 1
+            for record in book.data.items():
+                    yield (record)
+        raise StopIteration
 
 
 # Створення нової адресної книги
@@ -209,8 +214,20 @@ print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
     # Видалення запису Jane
 #book.delete("Jane")
+vv_record = Record("VV", "1974-01-25")
+vv_record.add_phone("9874443210")
+book.add_record(vv_record)
+
+pp_record = Record("PP", "1974-01-25")
+pp_record.add_phone("9876543111")
+book.add_record(pp_record)
 
 print (john_record.days_to_birthday())
 print (jane_record.days_to_birthday())
 
-book.iterator(3)
+book.iterator (3)
+print (next (book))
+print (next (book))
+print (next (book))
+print (next (book))
+print (next (book))
