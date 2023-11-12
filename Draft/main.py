@@ -1,148 +1,126 @@
-from collections import UserDict
+from random import randrange
 
 
-class Field:
-    def __init__(self, value):
-        self.value = value
+class Point:
+    def __init__(self, x, y):
+        self.__x = None
+        self.__y = None
+        self.x = x
+        self.y = y
+
+    @property
+    def x(self):
+        return self.__x
+
+    @x.setter
+    def x(self, x):
+        if (type(x) == int) or (type(x) == float):
+            self.__x = x
+
+    @property
+    def y(self):
+        return self.__y
+
+    @y.setter
+    def y(self, y):
+        if (type(y) == int) or (type(y) == float):
+            self.__y = y
 
     def __str__(self):
-        return str(self.value)
+        return f"Point({self.x},{self.y})"
 
-class Name(Field):
-    def input_name(self):
-        self.names = []
-        self.names.append (self.value)
-        return self.names
 
-class Phone(Field):
-    def __init__(self, value):
-        
-        self.checked = value
-        self.check()
+class Vector:
+    def __init__(self, coordinates: Point):
+        self.coordinates = coordinates
 
-    def check(self):
-        if self.checked.isnumeric() and len (self.checked) == 10:
-            self.value = self.checked
-            return self
-        else:
-            self.value = None
-            raise  Error (("The tel. number must be 10 digit length"))
+    def __setitem__(self, index, value):
+        if index == 0:
+            self.coordinates.x = value
+        if index == 1:
+            self.coordinates.y = value
 
-            
-class Error(ValueError):
-    def __init__(self, message):
-        super().__init__(message)
-        self.msg = message
+    def __getitem__(self, index):
+        if index == 0:
+            return self.coordinates.x
+        if index == 1:
+            return self.coordinates.y
 
-class Record:
-    def __init__(self, name):
-        self.name = Name(name)
-        self.phones = []
+    def __call__(self, value=None):
+        if value:
+            self.coordinates.x = self.coordinates.x * value
+            self.coordinates.y = self.coordinates.y * value
+        return self.coordinates.x, self.coordinates.y
 
-    def add_phone(self,phone):
-        new_phone = Phone (phone)
-        if new_phone.value:
-            self.phones.append(new_phone)
+    def __add__(self, vector):
+        x = self.coordinates.x + vector.coordinates.x
+        y = self.coordinates.y + vector.coordinates.y
+        return Vector(Point(x, y))
 
-    def find_phone (self, phone):
-        
-        for value in self.phones:
-            if value.value == phone:
-                return value
-        return None
-            
-    def edit_phone (self, phone_orig, phone_edited):
-        
-        phone_orig = Phone(phone_orig)
-        phone_edited = Phone(phone_edited)
-        key = 0
-        if phone_orig.value and phone_edited.value:
-                for value in self.phones:
-                    if value.value == phone_orig.value:
-                        index = self.phones.index(value)
-                        self.phones[index] = phone_edited
-                        key = 1
-                        break
-                if key == 0:
-                    raise Error ("no such phone")
+    def __sub__(self, vector):
+        x = self.coordinates.x - vector.coordinates.x
+        y = self.coordinates.y - vector.coordinates.y
+        return Vector(Point(x, y))
 
-    
-    def remove_phone(self, phone_2_remove):
-        list = []
-        list = self.phones
-        found = 0
-        for value in list:
-            if value == phone_2_remove:
-                index = list.index(value)
-                self.phones.pop(index)
-                found = 1
-                break
-        if found == 0:
-            raise ValueError ("no such phone")
+    def __mul__(self, vector):
+        return (
+                self.coordinates.x * vector.coordinates.x
+                + self.coordinates.y * vector.coordinates.y
+        )
 
-    
+    def len(self):
+        return (self.coordinates.x ** 2 + self.coordinates.y ** 2) ** 0.5
+
     def __str__(self):
-       return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        return f"Vector({self.coordinates.x},{self.coordinates.y})"
 
-class AddressBook(UserDict):
+    def __eq__(self, vector):
+        return self.len() == vector.len()
 
+    def __ne__(self, vector):
+        return self.len() != vector.len()
 
-    def add_record(self, record):
+    def __lt__(self, vector):
+        return self.len() < vector.len()
 
-        self.data [record.name.value] = record
+    def __gt__(self, vector):
+        return self.len() > vector.len()
 
+    def __le__(self, vector):
+        return self.len() <= vector.len()
 
-    def find (self, search_name):
-        for name, record in self.data.items():
-            if search_name == name:
-                return record
+    def __ge__(self, vector):
+        return self.len() >= vector.len()
 
+class Iterable:
+    def __init__(self, max_vectors, max_points):
+        self.current_index = 0
+        self.vectors = []
+        self.max_vectors = max_vectors
+        self.max_points = max_points        
+
+    def __next__(self):
+        if self.current_index < self.max_vectors:
+            self.current_index += 1
+            number_x = randrange (self.max_points)
+            number_y = randrange (self.max_points)
+            new_vect = Vector (Point (number_x,number_y))
+            self.vectors.append (new_vect)
+            return self.vectors[self.current_index-1]
+        raise StopIteration
             
-    def delete (self, search_name):
-        for name in self.data.keys():
-            if search_name == str(name):
-                del self.data[name]
-                break
 
 
-# Створення нової адресної книги
-book = AddressBook()
+class RandomVectors:
+    def __init__(self, max_vectors=10, max_points=50):
+        self.max_vectors = max_vectors
+        self.max_points = max_points
+        
 
+    def __iter__(self):
+        return Iterable(self.max_vectors, self.max_points)
 
-    # Створення запису для John
-john_record = Record("John")
-john_record.add_phone("1234567890")
-john_record.add_phone("5555555555")
+vectors = RandomVectors(5, 10)
 
-    # Додавання запису John до адресної книги
-book.add_record(john_record)
-
-    # Створення та додавання нового запису для Jane
-jane_record = Record("Jane")
-jane_record.add_phone("9876543210")
-book.add_record(jane_record)
-
-
-    # Знаходження та редагування телефону для John
-john = book.find("John")
-john.edit_phone("1234567890", "1112223333")
-
-
-print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
-
-
-    # Пошук конкретного телефону у записі John
-found_phone = john.find_phone("5555555555")
-print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
-
-
-
-    # Виведення всіх записів у книзі
-for name, record in book.data.items():
-    print(name, record)
-
-    # Видалення запису Jane
-book.delete("Jane")
-
-
-
+for vector in vectors:
+    print(vector)
