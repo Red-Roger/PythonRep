@@ -4,7 +4,7 @@ import datetime
 
 class Field:
     def __init__(self, value):
-        self.value = value
+        self.__value = value
     
     @property
     def value(self):
@@ -25,7 +25,7 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        self.value = value
+        self.__value = value
 
     @property
     def value(self):
@@ -33,19 +33,13 @@ class Phone(Field):
 
     @value.setter
     def value(self, value):
+        print (f"fafgsgsdgssfafsas {value}")
         if value.isnumeric() and len (value) == 10:
             self.__value = value
         else:
             self.__value = None
             raise  Error (("The tel. number must be 10 digit length"))
 
-    def check(self):
-        if self.checked.isnumeric() and len (self.checked) == 10:
-            self.value = self.checked
-            return self
-        else:
-            self.value = None
-            raise  Error (("The tel. number must be 10 digit length"))
 
             
 class Error(ValueError):
@@ -201,7 +195,7 @@ book.add_record(jane_record)
 
     # Знаходження та редагування телефону для John
 john = book.find("John")
-john.edit_phone("1234567890", "1112223333")
+john.edit_phone("1234567890", "11122dd23333")
 
 
 print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
@@ -225,9 +219,5 @@ book.add_record(pp_record)
 print (john_record.days_to_birthday())
 print (jane_record.days_to_birthday())
 
-book.iterator (3)
-print (next (book))
-print (next (book))
-print (next (book))
-print (next (book))
-print (next (book))
+for name, record in book.data.items():
+        print(record)
