@@ -58,11 +58,8 @@ class Record:
     
     def __str__(self):
         line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-        try:
-            if self.birthday:
-                line += f"; Birthday: {self.birthday}"
-        except AttributeError: # in case of birthday value lack in record
-            pass
+        if self.birthday:
+            line += f"; Birthday: {self.birthday}"
         return line
 
     @property
@@ -136,6 +133,7 @@ class Record:
             if self.birthday:
                 line += f"; Birthday: {self.birthday}"
         except AttributeError: # in case of birthday value lack in record
+            print ("~~~~Attribut error~~~~")
             pass
         return line
     
