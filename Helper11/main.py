@@ -4,28 +4,34 @@ import datetime
 
 class Field:
     def __init__(self, value):
-        self.__value = value
+        self._value = None
+        self.value = value
     
     @property
     def value(self):
-        return self.__value
+        return self._value
     
     @value.setter
     def value  (self, value):
-        self.__value = value
+        self._value = value
 
     def __str__(self):
         return str(self.value)
 
 class Name(Field):
-    def input_name(self):
-        self.names = []
-        self.names.append (self.value)
-        return self.names
+    pass
+    #def input_name(self):
+    #    self.names = []
+    #    self.names.append (self.value)
+    #    return self.names
 
 class Phone(Field):
     def __init__(self, value):
-        self.__value = value
+        self.__value = None
+        self.value = value
+    
+    def __eq__(self, other):
+        return self.value == other.value
 
     @property
     def value(self):
@@ -33,15 +39,12 @@ class Phone(Field):
 
     @value.setter
     def value(self, value):
-        print (f"fafgsgsdgssfafsas {value}")
         if value.isnumeric() and len (value) == 10:
             self.__value = value
         else:
-            self.__value = None
             raise  Error (("The tel. number must be 10 digit length"))
 
 
-            
 class Error(ValueError):
     def __init__(self, message):
         super().__init__(message)
@@ -75,51 +78,37 @@ class Record:
             self.phones.append(new_phone)
 
     def find_phone (self, phone):
-        
+        if type (phone) == str:
+            phone = Phone (phone)
         for value in self.phones:
-            if value.value == phone:
+            if value == phone:
                 return value
         return None
             
-    def edit_phone (self, phone_orig, phone_edited):
+    def edit_phone (self, phone_to_find, phone_for_replace):
         
-        phone_orig = Phone(phone_orig)
-        phone_edited = Phone(phone_edited)
-        key = 0
-        if phone_orig.value and phone_edited.value:
-                for value in self.phones:
-                    if value.value == phone_orig.value:
-                        index = self.phones.index(value)
-                        self.phones[index] = phone_edited
-                        key = 1
-                        break
-                if key == 0:
-                    raise Error ("no such phone")
-
+        phone_to_find = Phone(phone_to_find)
+        phone_for_replace = Phone(phone_for_replace)
+        if phone_to_find.value and phone_for_replace.value:
+            phone = self.find_phone(phone_to_find)
+            if phone:
+                phone.value = phone_for_replace.value
+            else:
+                raise Error ("no such phone")
+ 
     
     def remove_phone(self, phone):
 
         remove_phone = Phone(phone)
-        key = 0
         if remove_phone.value:
-                for value in self.phones:
-                    if value.value == remove_phone.value:
-                        index = self.phones.index(value)
-                        self.phones.pop (index)
-                        key = 1
-                        break
-                if key == 0:
+                phone = self.find_phone(remove_phone)
+                if phone:
+                    self.phones.remove(remove_phone)
+                else:
                     raise Error ("no such phone")
                 
     def days_to_birthday(self):
-        def __str__(self):
-            line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-            try:
-                if self.birthday:
-                    line += f"; Birthday: {self.birthday}"
-            except AttributeError:
-                pass
-            return line
+
 
         if self.birthday:
             today = datetime.date.today()
@@ -132,18 +121,20 @@ class Record:
             return f"No valid birthdate for {self.name} to compare"
 
 
-
     def __str__(self):
         line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
         try:
             if self.birthday:
                 line += f"; Birthday: {self.birthday}"
-        except AttributeError:
+        except AttributeError: # in case of birthday value lack in record
             pass
         return line
     
 class AddressBook(UserDict):
-
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__ (*args, **kwargs)
+        self.index = 0
 
     def add_record(self, record):
 
@@ -163,13 +154,16 @@ class AddressBook(UserDict):
                 break
     
     def iterator (self, max_recs):
- 
         self.max_recs = max_recs
-        self.index = 0
+        
+    def __iter__(self):
+        print ("start iteration")
+        return self
     
     def __next__ (self):
-        
+        print ({self.index})
         if self.index < self.max_recs: 
+            print ("next iteration")
             self.index += 1
             for record in book.data.items():
                     yield (record)
@@ -180,7 +174,7 @@ class AddressBook(UserDict):
 book = AddressBook()
 
     # Створення запису для John
-john_record = Record("John", "1974-11-27")
+john_record = Record("John", "1974-11-25")
 john_record.add_phone("1234567890")
 john_record.add_phone("5555555555")
 
@@ -195,7 +189,7 @@ book.add_record(jane_record)
 
     # Знаходження та редагування телефону для John
 john = book.find("John")
-john.edit_phone("1234567890", "11122dd23333")
+john.edit_phone("1234567890", "1112223333")
 
 
 print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
@@ -216,6 +210,13 @@ pp_record = Record("PP", "1974-01-25")
 pp_record.add_phone("9876543111")
 book.add_record(pp_record)
 
+print (john_record.days_to_birthday())
+print (jane_record.days_to_birthday())
+
+book.iterator(2)
+
+for name, record in book.data.items():
+        print(record)
 print (john_record.days_to_birthday())
 print (jane_record.days_to_birthday())
 
