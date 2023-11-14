@@ -78,7 +78,7 @@ class Record:
             self.phones.append(new_phone)
 
     def find_phone (self, phone):
-        if type (phone) == str:
+        if isinstance (phone, str):
             phone = Phone (phone)
         for value in self.phones:
             if value == phone:
@@ -89,23 +89,20 @@ class Record:
         
         phone_to_find = Phone(phone_to_find)
         phone_for_replace = Phone(phone_for_replace)
-        if phone_to_find.value and phone_for_replace.value:
-            phone = self.find_phone(phone_to_find)
-            if phone:
-                phone.value = phone_for_replace.value
-            else:
-                raise Error ("no such phone")
+        phone = self.find_phone(phone_to_find)
+        if phone:
+            phone.value = phone_for_replace.value
+        else:
+            raise Error ("no such phone")
  
     
     def remove_phone(self, phone):
 
-        remove_phone = Phone(phone)
-        if remove_phone.value:
-                phone = self.find_phone(remove_phone)
-                if phone:
-                    self.phones.remove(remove_phone)
-                else:
-                    raise Error ("no such phone")
+        phone = self.find_phone(phone)
+        if phone:
+            self.phones.remove(phone)
+        else:
+            raise Error ("no such phone")
                 
     def days_to_birthday(self):
 
