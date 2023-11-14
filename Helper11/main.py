@@ -43,6 +43,25 @@ class Phone(Field):
             self.__value = value
         else:
             raise  Error (("The tel. number must be 10 digit length"))
+        
+class Birthday(Field):
+    def __init__(self, value):
+        self.__value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, birthday):
+        if  birthday:
+            try:
+                self.__value = datetime.datetime.strptime (birthday, "%Y-%m-%d")
+                self.__value = self.__value.date()
+            except ValueError:
+                self.__value = None
+                print (f"Birthday format for {self.name} doesnt't match (YYYY-MM-DD)")
 
 
 class Error(ValueError):
@@ -54,28 +73,14 @@ class Record:
     def __init__(self, name, birthday=None):
         self.name = Name(name)
         self.phones = []
-        self.birthday = birthday
-
-    @property
-    def birthday(self):
-        return self.__birthday
-
-    @birthday.setter
-    def birthday(self, birthday):
-        
-        if  birthday:
-            try:
-                self.__birthday = datetime.datetime.strptime (birthday, "%Y-%m-%d")
-                self.__birthday = self.__birthday.date()
-            except ValueError:
-                self.__birthday = None
-                print (f"Birthday format for {self.name} doesnt't match (YYYY-MM-DD)")
+        self.birthday = Birthday(birthday)
 
 
     def add_phone(self,phone):
         new_phone = Phone (phone)
         if new_phone.value:
             self.phones.append(new_phone)
+
 
     def find_phone (self, phone):
         if isinstance (phone, str):
@@ -87,11 +92,9 @@ class Record:
             
     def edit_phone (self, phone_to_find, phone_for_replace):
         
-        phone_to_find = Phone(phone_to_find)
-        phone_for_replace = Phone(phone_for_replace)
         phone = self.find_phone(phone_to_find)
         if phone:
-            phone.value = phone_for_replace.value
+            phone.value = phone_for_replace
         else:
             raise Error ("no such phone")
  
@@ -106,12 +109,11 @@ class Record:
                 
     def days_to_birthday(self):
 
-
         if self.birthday:
             today = datetime.date.today()
-            user_birth_norm = self.birthday.replace (year = today.year)
+            user_birth_norm = self.birthday.value.replace (year = today.year)
             if (user_birth_norm - today).days < 0: 
-                user_birth_norm = self.birthday.replace (year = today.year+1)
+                user_birth_norm = self.birthday.value.replace (year = today.year+1)
             birth_diff = user_birth_norm - today
             return birth_diff.days
         else:
@@ -120,12 +122,8 @@ class Record:
 
     def __str__(self):
         line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-        try:
-            if self.birthday:
-                line += f"; Birthday: {self.birthday}"
-        except AttributeError: # in case of birthday value lack in record
-            print ("~~~~Attribut error~~~~")
-            pass
+        if self.birthday:
+            line += f"; Birthday: {self.birthday}"
         return line
     
 class AddressBook(UserDict):
