@@ -55,12 +55,6 @@ class Record:
         self.name = Name(name)
         self.phones = []
         self.birthday = birthday
-    
-    def __str__(self):
-        line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-        if self.birthday:
-            line += f"; Birthday: {self.birthday}"
-        return line
 
     @property
     def birthday(self):
