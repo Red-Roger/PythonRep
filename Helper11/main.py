@@ -217,8 +217,3 @@ book.iterator(2)
 
 for name, record in book.data.items():
         print(record)
-print (john_record.days_to_birthday())
-print (jane_record.days_to_birthday())
-
-for name, record in book.data.items():
-        print(record)
