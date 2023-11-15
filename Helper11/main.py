@@ -39,10 +39,11 @@ class Phone(Field):
 
     @value.setter
     def value(self, value):
-        if value.isnumeric() and len (value) == 10:
-            self.__value = value
-        else:
-            raise  Error (("The tel. number must be 10 digit length"))
+        if isinstance (value, str):
+            if value.isnumeric() and len (value) == 10:
+                self.__value = value
+            else:
+                raise  Error (("The tel. number must be 10 digit length"))
         
 class Birthday(Field):
     def __init__(self, value):
@@ -78,13 +79,11 @@ class Record:
 
     def add_phone(self,phone):
         new_phone = Phone (phone)
-        if new_phone.value:
-            self.phones.append(new_phone)
+        self.phones.append(new_phone)
 
 
     def find_phone (self, phone):
-        if isinstance (phone, str):
-            phone = Phone (phone)
+        phone = Phone (phone)
         for value in self.phones:
             if value == phone:
                 return value
