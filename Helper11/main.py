@@ -122,8 +122,8 @@ class Record:
 
     def __str__(self):
         line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-        if self.birthday:
-            line += f"; Birthday: {self.birthday}"
+        if self.birthday.value:
+            line += f"; Birthday: {self.birthday.value}"
         return line
     
     
