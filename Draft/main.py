@@ -1,225 +1,90 @@
-from collections import UserDict
-import datetime
+import pickle
+import copy
+from copy import deepcopy, copy
 
 
-class Field:
-    def __init__(self, value):
-        self._value = None
-        self.value = value
-    
-    @property
-    def value(self):
-        return self._value
-    
-    @value.setter
-    def value  (self, value):
-        self._value = value
+class Person:
+    def __init__(self, name: str, email: str, phone: str, favorite: bool):
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.favorite = favorite
 
-    def __str__(self):
-        return str(self.value)
-
-class Name(Field):
-    pass
-    #def input_name(self):
-    #    self.names = []
-    #    self.names.append (self.value)
-    #    return self.names
-
-class Phone(Field):
-    def __init__(self, value):
-        self.__value = None
-        self.value = value
-    
-    def __eq__(self, other):
-        return self.value == other.value
-
-    @property
-    def value(self):
-        return self.__value
-
-    @value.setter
-    def value(self, value):
-        if value.isnumeric() and len (value) == 10:
-            self.__value = value
-        else:
-            raise  Error (("The tel. number must be 10 digit length"))
-
-
-class Error(ValueError):
-    def __init__(self, message):
-        super().__init__(message)
-        self.msg = message
-
-class Record:
-    def __init__(self, name, birthday=None):
-        self.name = Name(name)
-        self.phones = []
-        self.birthday = birthday
-
-    @property
-    def birthday(self):
-        return self.__birthday
-
-    @birthday.setter
-    def birthday(self, birthday):
+    def __copy__(self):
+        new_copy = Person(self.name, self.email, self.phone, self.favorite)
+        new_copy.name = copy (self.name)
+        new_copy.email = copy (self.email)
+        new_copy.phone = copy (self.phone)
+        new_copy.favorite = copy (self.favorite)
+        return new_copy
         
-        if  birthday:
-            try:
-                self.__birthday = datetime.datetime.strptime (birthday, "%Y-%m-%d")
-                self.__birthday = self.__birthday.date()
-            except ValueError:
-                self.__birthday = None
-                print (f"Birthday format for {self.name} doesnt't match (YYYY-MM-DD)")
 
-
-    def add_phone(self,phone):
-        new_phone = Phone (phone)
-        if new_phone.value:
-            self.phones.append(new_phone)
-
-    def find_phone (self, phone):
-        if type (phone) == str:
-            phone = Phone (phone)
-        for value in self.phones:
-            if value == phone:
-                return value
-        return None
-            
-    def edit_phone (self, phone_to_find, phone_for_replace):
+class Contacts:
+    def __init__(self, filename: str, contacts: list[Person] = None):
+        if contacts is None:
+            contacts = []
+        self.contacts = contacts
+        self.filename = filename
+        self.count_save = 0
+        self.is_unpacking = False
         
-        phone_to_find = Phone(phone_to_find)
-        phone_for_replace = Phone(phone_for_replace)
-        if phone_to_find.value and phone_for_replace.value:
-            phone = self.find_phone(phone_to_find)
-            if phone:
-                phone.value = phone_for_replace.value
-            else:
-                raise Error ("no such phone")
- 
-    
-    def remove_phone(self, phone):
 
-        remove_phone = Phone(phone)
-        if remove_phone.value:
-                phone = self.find_phone(remove_phone)
-                if phone:
-                    self.phones.remove(remove_phone)
-                else:
-                    raise Error ("no such phone")
-                
-    def days_to_birthday(self):
-
-
-        if self.birthday:
-            today = datetime.date.today()
-            user_birth_norm = self.birthday.replace (year = today.year)
-            if (user_birth_norm - today).days < 0: 
-                user_birth_norm = self.birthday.replace (year = today.year+1)
-            birth_diff = user_birth_norm - today
-            return birth_diff.days
-        else:
-            return f"No valid birthdate for {self.name} to compare"
-
-
-    def __str__(self):
-        line = f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
-        try:
-            if self.birthday:
-                line += f"; Birthday: {self.birthday}"
-        except AttributeError: # in case of birthday value lack in record
-            print ("~~~~Attribut error~~~~")
-            pass
-        return line
-    
-class AddressBook(UserDict):
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__ (*args, **kwargs)
-        self.index = 0
-
-    def add_record(self, record):
-
-        self.data [record.name.value] = record
-
-
-    def find (self, search_name):
-        for name, record in self.data.items():
-            if search_name == name:
-                return record
-
+    def save_to_file(self):
+        with open(self.filename, "wb") as fh:
+            pickle.dump(self, fh)
             
-    def delete (self, search_name):
-        for name in self.data.keys():
-            if search_name == str(name):
-                del self.data[name]
-                break
+
+    def read_from_file(self):
+        with open(self.filename, "rb") as fh:
+            unpacked = pickle.load(fh)
+        return unpacked
+
+    def __getstate__(self):
+        attributes = self.__dict__.copy()
+        attributes['fh'] = None
+        attributes["count_save"] += 1
+        return attributes
     
-    def iterator (self, max_recs):
-        self.max_recs = max_recs
+    def __setstate__(self, value):
+        self.__dict__ = value
+        self.is_unpacking = True
+
+    def __copy__(self):
+        new_copy = Contacts(self.filename, self.contacts)
+        new_copy.contacts = copy (self.contacts)
+        new_copy.filename = copy (self.filename)
+        new_copy.count_save = copy (self.count_save)
+        new_copy.is_unpacking = copy (self.is_unpacking)
+        return new_copy
     
-    def __iter__(self):
-        return self
-    
-    
-    def __next__(self):
-        if self.index < len(self.data):
-            start = self.index
-            end = min(self.index + self.max_recs, len(self.data))
-            result = dict(list(self.data.items())[start:end])
-            self.index += self.max_recs
-            return result
-        else:
-            self.index = 0
-            raise StopIteration
+    def __deepcopy__(self, memo):
+        copy_obj = Contacts(self.filename, self.contacts)
+        memo[id(copy_obj)] = copy_obj
+        copy_obj.contacts = deepcopy(self.contacts)
+        copy_obj.filename = deepcopy(self.filename)
+        copy_obj.count_save = deepcopy(self.count_save)
+        copy_obj.is_unpacking = deepcopy(self.is_unpacking)
+        return copy_obj
 
+        
 
-# Створення нової адресної книги
-book = AddressBook()
+contacts = [
+    Person(
+        "Allen Raymond",
+        "nulla.ante@vestibul.co.uk",
+        "(992) 914-3792",
+        False,
+    ),
+    Person(
+        "Chaim Lewis",
+        "dui.in@egetlacus.ca",
+        "(294) 840-6685",
+        False,
+    ),
+]
 
-    # Створення запису для John
-john_record = Record("John", "1974-11-25")
-john_record.add_phone("1234567890")
-john_record.add_phone("5555555555")
-
-    # Додавання запису John до адресної книги
-book.add_record(john_record)
-
-    # Створення та додавання нового запису для Jane
-jane_record = Record("Jane", "1974-01-25")
-jane_record.add_phone("9876543210")
-book.add_record(jane_record)
-
-
-    # Знаходження та редагування телефону для John
-john = book.find("John")
-john.edit_phone("1234567890", "1112223333")
-
-
-print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
-
-
-    # Пошук конкретного телефону у записі John
-found_phone = john.find_phone("5555555555")
-print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
-
-
-    # Видалення запису Jane
-#book.delete("Jane")
-vv_record = Record("VV", "1974-01-25")
-vv_record.add_phone("9874443210")
-book.add_record(vv_record)
-
-pp_record = Record("PP")
-pp_record.add_phone("9876543111")
-book.add_record(pp_record)
-
-print (john_record.days_to_birthday())
-print (jane_record.days_to_birthday())
-
-book.iterator(2)
-
-for name, phones in book.data.items():
-    print (name, phones)
-    
-for part in book:
-    print(part)
+persons = Contacts("user_class.dat", contacts)
+persons.save_to_file()
+person_from_file = persons.read_from_file()
+print(persons.is_unpacking)  # False
+print(person_from_file.is_unpacking)  # True
