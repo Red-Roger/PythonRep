@@ -133,7 +133,10 @@ class AddressBook(UserDict):
         super().__init__ (*args, **kwargs)
         self.index = 0
         self.BOOK2FILE = "AddressBook.json"
-        self = self.read_contacts_from_file()
+        try:
+            self = self.read_contacts_from_file()
+        except FileNotFoundError:
+            pass
 
     def write_contacts_to_file(self):
         BOOK2FILE = self.BOOK2FILE
