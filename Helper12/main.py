@@ -1,5 +1,7 @@
 from collections import UserDict
 import datetime
+import json
+import pickle
 
 
 class Field:
@@ -131,6 +133,21 @@ class AddressBook(UserDict):
     def __init__(self, *args, **kwargs):
         super().__init__ (*args, **kwargs)
         self.index = 0
+        self.BOOK2FILE = "AddressBook.json"
+
+    def write_contacts_to_file(self, record):
+        BOOK2FILE = self.BOOK2FILE
+        with open(BOOK2FILE, "w") as fh:
+            contacts_dict = {}
+            contacts_dict["contacts"] = record
+            pickle.dumps(contacts_dict, fh)
+
+
+    def read_contacts_from_file(self):
+        filename = self.BOOK2FILE
+        contacts = list
+        with open(filename, "r") as fh:
+            return json.load(fh)["contacts"]
 
     def add_record(self, record):
 
@@ -166,6 +183,11 @@ class AddressBook(UserDict):
         else:
             self.index = 0
             raise StopIteration
+        
+    def __getstate__(self):
+        attributes = self.__dict__.copy()
+        attributes['fh'] = None
+        return attributes
 
 
 # Створення нової адресної книги
@@ -178,6 +200,17 @@ john_record.add_phone("5555555555")
 
     # Додавання запису John до адресної книги
 book.add_record(john_record)
+
+with open("AddressBook.json", "w") as fh:
+    json.dump(book, fh)
+
+
+#with open("AddressBook.dat", "w") as fh:
+#    pickle.dumps(book, fh)
+
+
+#book.write_contacts_to_file (book)
+
 
     # Створення та додавання нового запису для Jane
 jane_record = Record("Jane", "1974-01-25")
