@@ -1,8 +1,7 @@
 from collections import UserDict
 import datetime
 import json
-import pickle
-
+import jsonpickle
 
 class Field:
     def __init__(self, value):
@@ -134,24 +133,27 @@ class AddressBook(UserDict):
         super().__init__ (*args, **kwargs)
         self.index = 0
         self.BOOK2FILE = "AddressBook.json"
+        self = self.read_contacts_from_file()
 
-    def write_contacts_to_file(self, record):
+    def write_contacts_to_file(self):
         BOOK2FILE = self.BOOK2FILE
+
+        book_encoded = jsonpickle.encode (book)
         with open(BOOK2FILE, "w") as fh:
-            contacts_dict = {}
-            contacts_dict["contacts"] = record
-            pickle.dumps(contacts_dict, fh)
+            json.dump(book_encoded, fh)
 
 
     def read_contacts_from_file(self):
         filename = self.BOOK2FILE
-        contacts = list
         with open(filename, "r") as fh:
-            return json.load(fh)["contacts"]
+            unpacked = json.load(fh)
+
+        book_decoded = jsonpickle.decode (unpacked)
+        return book_decoded
 
     def add_record(self, record):
-
         self.data [record.name.value] = record
+        self.write_contacts_to_file()
 
 
     def find (self, search_name):
@@ -165,6 +167,7 @@ class AddressBook(UserDict):
             if search_name == str(name):
                 del self.data[name]
                 break
+        self.write_contacts_to_file()
     
     def iterator (self, max_recs):
         self.max_recs = max_recs
@@ -201,16 +204,6 @@ john_record.add_phone("5555555555")
     # Додавання запису John до адресної книги
 book.add_record(john_record)
 
-with open("AddressBook.json", "w") as fh:
-    json.dump(book, fh)
-
-
-#with open("AddressBook.dat", "w") as fh:
-#    pickle.dumps(book, fh)
-
-
-#book.write_contacts_to_file (book)
-
 
     # Створення та додавання нового запису для Jane
 jane_record = Record("Jane", "1974-01-25")
@@ -232,7 +225,7 @@ print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
 
     # Видалення запису Jane
-#book.delete("Jane")
+book.delete("Jane")
 vv_record = Record("VV", "1974-01-25")
 vv_record.add_phone("9874443210")
 book.add_record(vv_record)
@@ -246,8 +239,6 @@ print (jane_record.days_to_birthday())
 
 book.iterator(2)
 
-for name, phones in book.data.items():
+for name, phones in book.read_contacts_from_file().data.items():
     print (name, phones)
     
-for part in book:
-    print(part)
