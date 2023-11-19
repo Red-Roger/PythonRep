@@ -161,6 +161,15 @@ class AddressBook(UserDict):
             if search_name == name:
                 return record
 
+    def google (self, sample):
+        found_dict = {}
+        for name, record in self.data.items():
+            record = str (record)
+            if record.find(sample) > -1:
+                found_dict[name] = record
+        return found_dict
+
+
             
     def delete (self, search_name):
         for name in self.data.keys():
@@ -241,4 +250,6 @@ book.iterator(2)
 
 for name, phones in book.read_contacts_from_file().data.items():
     print (name, phones)
+
+print (book.google("43"))
     
