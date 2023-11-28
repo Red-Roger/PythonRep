@@ -1,7 +1,22 @@
 from collections import UserDict
+from abc import abstractmethod, ABC
 import datetime
 import json
 import jsonpickle
+
+class Output(ABC):
+    @abstractmethod
+    def print_out(self):
+        pass
+
+class Console_out(Output):
+    def __init__(self, message):
+        self.message = message
+        self.print_out()
+    
+    def print_out(self):
+        print (self.message)
+        return super().print_out()
 
 class Field:
     def __init__(self, value):
@@ -63,7 +78,7 @@ class Birthday(Field):
                 self.__value = self.__value.date()
             except ValueError:
                 self.__value = None
-                print (f"Birthday format for {self.name} doesnt't match (YYYY-MM-DD)")
+                Console_out (f"Birthday format for {self.name} doesnt't match (YYYY-MM-DD)")
 
 
 class Error(ValueError):
@@ -166,10 +181,10 @@ class AddressBook(UserDict):
 
     def google (self, sample):
         found_dict = {}
-        print (f"With sample \"{sample}\" found: ")
+        Console_out (f"With sample \"{sample}\" found: ")
         found_name = self.find(sample)
         if found_name:
-            print (found_name)
+            Console_out (found_name)
             return found_name
 
         for name, record in self.data.items():
@@ -234,12 +249,12 @@ john = book.find("John")
 john.edit_phone("1234567890", "1112223333")
 
 
-print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
+Console_out(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
 
 
     # Пошук конкретного телефону у записі John
 found_phone = john.find_phone("5555555555")
-print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
+Console_out(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
 
     # Видалення запису Jane
@@ -252,8 +267,8 @@ pp_record = Record("PP")
 pp_record.add_phone("9876543111")
 book.add_record(pp_record)
 
-print (john_record.days_to_birthday())
-print (jane_record.days_to_birthday())
+Console_out (john_record.days_to_birthday())
+Console_out (jane_record.days_to_birthday())
 
 book.iterator(2)
 
