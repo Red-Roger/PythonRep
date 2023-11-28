@@ -1,6 +1,0 @@
-0: John courier
-1: Pipe cook
-2: Anthony cleaner
-3: Mark accounter
-4: Vera cleaner
-5: Oleh programmer
