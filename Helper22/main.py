@@ -10,14 +10,25 @@ class Output(ABC):
     def print_out(self):
         pass
 
+    @abstractmethod
+    def print_book(self, book):
+        pass
+
 class Console_out(Output):
     def __init__(self, message):
         self.message = message
-        self.print_out()
+        if message:
+            self.print_out()
     
     def print_out(self):
         print (self.message)
         return super().print_out()
+    
+    def print_book(self, book):
+        self.book = book
+        for name, phones in book.read_contacts_from_file().data.items():
+            print (name, phones)
+        return super().print_book(book)
     
 
 class Web_out(Output):
@@ -290,12 +301,13 @@ Console_out (jane_record.days_to_birthday())
 
 book.iterator(2)
 
-for name, phones in book.read_contacts_from_file().data.items():
-    print (name, phones)
+#for name, phones in book.read_contacts_from_file().data.items():
+#    print (name, phones)
 
 book.google("43")
 
 Output_book = Web_out(None).print_book(book)
+Console_book = Console_out(None).print_book(book)
 
 app = Flask(__name__)
 @app.route('/')
