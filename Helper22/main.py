@@ -42,9 +42,9 @@ class Web_out(Output):
     
     def print_book(self, book):
         self.book = book
-        output_book = "<table border>"
+        output_book = "<table border><tr><th align='center'><b>Name</b></th><th align='center'><b>Record</b></th></tr>"
         for name, phones in book.read_contacts_from_file().data.items():
-            output_book += f"<tr><td>{name}</td><td>{phones}</td>"
+            output_book += f"<tr><td>{name}</td><td>{phones}</td></tr>"
         output_book += "</table border>"
         return output_book
 
@@ -277,14 +277,9 @@ book.add_record(jane_record)
 john = book.find("John")
 john.edit_phone("1234567890", "1112223333")
 
-
-Console_out(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
-
-
     # Пошук конкретного телефону у записі John
 found_phone = john.find_phone("5555555555")
 Console_out(f"{john.name}: {found_phone}")  # Виведення: 5555555555
-
 
     # Видалення запису Jane
 book.delete("Jane")
