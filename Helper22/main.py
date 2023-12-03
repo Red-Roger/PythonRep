@@ -42,10 +42,11 @@ class Web_out(Output):
     
     def print_book(self, book):
         self.book = book
-        output_book = "<table border><tr><th align='center'><b>Name</b></th><th align='center'><b>Record</b></th></tr>"
+        output_book = "<html><body bgcolor='silver'>"
+        output_book += "<table border><tr><th align='center'><b>Name</b></th><th align='center'><b>Record</b></th></tr>"
         for name, phones in book.read_contacts_from_file().data.items():
             output_book += f"<tr><td>{name}</td><td>{phones}</td></tr>"
-        output_book += "</table border>"
+        output_book += "</table border></body></html>"
         return output_book
 
 class Field:
