@@ -29,6 +29,13 @@ class Web_out(Output):
         self.message = f"<tr><td>{self.message}</td></tr>"
         return self.message
     
+    def print_book(self, book):
+        self.book = book
+        output_book = "<table border>"
+        for name, phones in book.read_contacts_from_file().data.items():
+            output_book += f"<tr><td>{name}</td><td>{phones}</td>"
+        output_book += "</table border>"
+        return output_book
 
 class Field:
     def __init__(self, value):
@@ -288,17 +295,12 @@ for name, phones in book.read_contacts_from_file().data.items():
 
 book.google("43")
 
+Output_book = Web_out(None).print_book(book)
 
 app = Flask(__name__)
 @app.route('/')
 def output():
-    Output_string = "<table border>"
-    Output_string += Web_out(john).print_out()
-    Output_string += Web_out(f"{john.name}: {found_phone}").print_out()
-    Output_string += Web_out(john_record.days_to_birthday()).print_out()
-    Output_string += Web_out(jane_record.days_to_birthday()).print_out()
-    Output_string += "</table>"
-    return Output_string
+    return Output_book
 
 if __name__ == '__main__':
   app.run(debug=False, host='0.0.0.0')
