@@ -294,9 +294,9 @@ print (Output_string)
 app = Flask(__name__)
 @app.route('/')
 def output():
-    Output_string = Web_out(john).print_out() + "\n"
-    Output_string += Web_out(f"{john.name}: {found_phone}").print_out() + "\n"
-    Output_string += Web_out(john_record.days_to_birthday()).print_out() + "\n"
+    Output_string = Web_out(john).print_out() + "<br>"
+    Output_string += Web_out(f"{john.name}: {found_phone}").print_out() + "<br>"
+    Output_string += Web_out(john_record.days_to_birthday()).print_out() + "<br>"
 
     return Output_string
 
