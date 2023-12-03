@@ -287,17 +287,15 @@ for name, phones in book.read_contacts_from_file().data.items():
 
 book.google("43")
 
-Output_string = Web_out(john).print_out()
-print (Output_string)
-
 
 app = Flask(__name__)
 @app.route('/')
 def output():
-    Output_string = Web_out(john).print_out() + "<br>"
-    Output_string += Web_out(f"{john.name}: {found_phone}").print_out() + "<br>"
-    Output_string += Web_out(john_record.days_to_birthday()).print_out() + "<br>"
-
+    Output_string = "<table border>"
+    Output_string += f"<tr><td>{Web_out(john).print_out()}</td></tr>"
+    Output_string +=  f"<tr><td>{Web_out(f"{john.name}: {found_phone}").print_out()}</td></tr>"
+    Output_string += f"<tr><td>{Web_out(john_record.days_to_birthday()).print_out()}</td></tr>"
+    Output_string += "</table>"
     return Output_string
 
 if __name__ == '__main__':
