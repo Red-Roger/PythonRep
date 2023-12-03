@@ -296,6 +296,7 @@ def output():
     Output_string += Web_out(john).print_out()
     Output_string += Web_out(f"{john.name}: {found_phone}").print_out()
     Output_string += Web_out(john_record.days_to_birthday()).print_out()
+    Output_string += Web_out(jane_record.days_to_birthday()).print_out()
     Output_string += "</table>"
     return Output_string
 
