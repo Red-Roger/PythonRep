@@ -26,6 +26,7 @@ class Web_out(Output):
         self.print_out()
     
     def print_out(self):
+        self.message = f"<tr><td>{self.message}</td></tr>"
         return self.message
     
 
@@ -292,9 +293,9 @@ app = Flask(__name__)
 @app.route('/')
 def output():
     Output_string = "<table border>"
-    Output_string += f"<tr><td>{Web_out(john).print_out()}</td></tr>"
-    Output_string +=  f"<tr><td>{Web_out(f"{john.name}: {found_phone}").print_out()}</td></tr>"
-    Output_string += f"<tr><td>{Web_out(john_record.days_to_birthday()).print_out()}</td></tr>"
+    Output_string += Web_out(john).print_out()
+    Output_string += Web_out(f"{john.name}: {found_phone}").print_out()
+    Output_string += Web_out(john_record.days_to_birthday()).print_out()
     Output_string += "</table>"
     return Output_string
 
