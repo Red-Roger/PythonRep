@@ -87,8 +87,11 @@ def findfiles (root_path, ROOT):
             img_path = "/other"
         
         makedirs(ROOT, img_path)
-        thread1 = Thread(target=copy_file (root_path, name, img_path, ROOT))
-        thread1.start()
+        
+        threads = []
+        thread = Thread(target=copy_file (root_path, name, img_path, ROOT))
+        thread.start()
+        threads.append(thread) #про всяк випадок зберегти потоки )
 
 
 def main():
