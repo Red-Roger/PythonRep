@@ -1,17 +1,31 @@
-from multiprocessing import Pool, current_process
-import logging
-
-logger = logging.getLogger()
-stream_handler = logging.StreamHandler()
-logger.addHandler(stream_handler)
-logger.setLevel(logging.DEBUG)
+from threading import Thread
+from time import sleep
+from http import client
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-def worker(x):
-    logger.debug(f"pid={current_process().pid}, x={x}")
-    return x*x
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'Hello, world!')
+
+    def do_POST(self):
+        pass
 
 
-if __name__ == '__main__':
-    with Pool(processes=2) as pool:
-        logger.debug(pool.map(worker, range(10)))
+httpd = HTTPServer(('localhost', 8001), SimpleHTTPRequestHandler)
+server = Thread(target=httpd.serve_forever)
+server.start()
+sleep(0.5)
+
+h1 = client.HTTPConnection('localhost', 8001)
+h1.request("GET", "/")
+
+res = h1.getresponse()
+print(res.status, res.reason)
+data = res.read()
+print(data)
+
+httpd.shutdown()
