@@ -93,7 +93,6 @@ def save_data_to_json(data):
     dict2read = eval (dict2read)
     dict2read[now] = data_dict
     str_2_file = parsestr(dict2read)
-    print (str_2_file)
     with open (path2write, 'w') as fw:
         fw.write (str_2_file)
 
