@@ -1,5 +1,4 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from time import sleep
 import socket
 import datetime
 from threading import Thread
