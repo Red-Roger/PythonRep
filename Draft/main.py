@@ -1,31 +1,24 @@
-from threading import Thread
-from time import sleep
-from http import client
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import platform
+
+import aiohttp
+import asyncio
 
 
-class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+async def main():
 
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b'Hello, world!')
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://api.privatbank.ua/p24api/exchange_rates?json&date=22.04.2023') as response:
 
-    def do_POST(self):
-        pass
+            print("Status:", response.status)
+            print("Content-type:", response.headers['content-type'])
+            print('Cookies: ', response.cookies)
+            print(response.ok)
+            result = await response.json()
+            return result
 
 
-httpd = HTTPServer(('localhost', 8001), SimpleHTTPRequestHandler)
-server = Thread(target=httpd.serve_forever)
-server.start()
-sleep(0.5)
-
-h1 = client.HTTPConnection('localhost', 8001)
-h1.request("GET", "/")
-
-res = h1.getresponse()
-print(res.status, res.reason)
-data = res.read()
-print(data)
-
-httpd.shutdown()
+if __name__ == "__main__":
+    if platform.system() == 'Windows':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    r = asyncio.run(main())
+    print(r)
