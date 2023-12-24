@@ -1,19 +1,19 @@
 import platform
-
+import sys
 import aiohttp
 import asyncio
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from copy import deepcopy
 
 date_result = {} 
 
 def inpt():
 
-    inpt_date = input ("Input date: (dd.mm.yyyy)")
+    inpt_date = input ("Input date (dd.mm.yyyy): ")
     try:
-        datetime.strptime(inpt_date, '%d.%m.%YYYY').date()
+        datetime.strptime(inpt_date, '%d.%m.%Y').date()
     except ValueError:
-        inpt_date = input ("Date is not correct\nInput date: (dd.mm.yyyy)")
+        inpt_date = input ("Date is not correct\nInput date (dd.mm.yyyy): ")
     inpt_depth = int (input ("Input depth: "))
     while ( inpt_depth > 10 or inpt_depth < 1 ):
         inpt_depth = int (input ("Input depth should be from -1 to 10\nInput depth: "))
@@ -37,9 +37,10 @@ def input_dates(inpt_date, inpt_depth):
     
     return scope
 
-def parce (result, inpt_date):
+def parce (result, inpt_date, add_cur):
     euro = {}
     doll = {}
+    add = {}
     date_rates = {}
 
     rates = result['exchangeRate']
@@ -50,6 +51,12 @@ def parce (result, inpt_date):
         if j['currency'] == "USD":
             doll['sale'] = j['saleRate']
             doll['purchase'] = j['purchaseRate']
+        if add_cur:
+            if j['currency'] == add_cur:
+                add['sale'] = j['saleRate']
+                add['purchase'] = j['purchaseRate']
+    if add_cur:
+        date_rates[add_cur] = add
     date_rates['EUR'] = euro
     date_rates['USD'] = doll
     date_result[inpt_date] = deepcopy(date_rates)
@@ -57,6 +64,11 @@ def parce (result, inpt_date):
 
 
 async def main():
+    
+    try:
+        add_cur = sys.argv[1]
+    except IndexError:
+        add_cur =''
 
     async with aiohttp.ClientSession() as session:
         results = []
@@ -66,7 +78,7 @@ async def main():
         for i in range(len(inpt_date)):
             async with session.get(f'https://api.privatbank.ua/p24api/exchange_rates?json&date={inpt_date[i]}') as response:
                 result = await response.json()
-            date_result = parce(result, inpt_date[i])
+            date_result = parce(result, inpt_date[i], add_cur)
         results.append(date_result)
         return results
 
