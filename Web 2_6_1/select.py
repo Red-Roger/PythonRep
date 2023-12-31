@@ -141,7 +141,7 @@ if __name__ == '__main__':
         projects = select_data(con, request)
         print(projects)
         print ("")
-        print("12. Оцінки студентів у певній групі з певного предмета на останньому занятт: ")
+        print("12. Оцінки студентів у певній групі з певного предмета на останньому заняті: ")
         # search_param = input ("Номер групи? ")
         # search_param2 = input ("ID предмета? ")
         search_param = 1
