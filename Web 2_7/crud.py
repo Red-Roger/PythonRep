@@ -1,4 +1,4 @@
-from sqlalchemy.engine import create_engine
+from sqlalchemy import update
 from sqlalchemy.orm import sessionmaker
 from connect_db import session
 
@@ -53,6 +53,18 @@ if args.action:
             if args.modify[0] == 'Students':
                 if args.id:
                     session.query(Students).filter(Students.id == args.id).delete()
+
+    if args.action[0]  == 'update':
+        if args.modify[0] == 'Tutors':
+            if args.name:
+                if args.id:
+                    session.query(Tutors).filter(Tutors.id == args.id).update({'tutor_name': args.name[0]})
+        
+    if args.action[0]  == 'update':
+        if args.modify[0] == 'Students':
+            if args.name:
+                if args.id:
+                    session.query(Students).filter(Students.id == args.id).update({'student_name': args.name[0]})
 
 session.commit()
 
