@@ -1,13 +1,10 @@
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
+from connect_db import session
 
 import argparse
 from connect_db import session
 from models import Groups, Students, Tutors, Lessons, Marks
-
-engine = create_engine("sqlite:///courses.db")
-Session = sessionmaker(bind=engine)
-session = Session()
 
 
 parser = argparse.ArgumentParser()
