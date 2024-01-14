@@ -35,10 +35,15 @@ if args.action:
             if args.name:
                 tutor2add = Tutors(tutor_name=args.name[0])
                 session.add(tutor2add)
-        if args.modify[0] == 'Group':
+        if args.modify[0] == 'Groups':
             if args.name:
                 groups2add = Groups(group_name=args.name[0])
                 session.add(groups2add)
+        if args.modify[0] == 'Students':
+            if args.name:
+                if args.id:
+                    student2add = Students(student_name=args.name[0], group_id=args.id[0])
+                    session.add(student2add)
 
     if args.action[0]  == 'delete':
         if args.modify[0] == 'Tutors':
