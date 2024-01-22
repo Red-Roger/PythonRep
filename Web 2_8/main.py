@@ -3,7 +3,6 @@ import connect
 import redis
 from redis_lru import RedisLRU
 
-# redis не працює, бо процесор не підтримує віртуалізацію
 
 client = redis.StrictRedis(host="localhost", port=6379, password=None)
 cache = RedisLRU(client)
