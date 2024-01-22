@@ -25,5 +25,3 @@ for element in quotes:
     auth = Authors.objects(fullname = element['author']).first()
     Quotes(tags = element['tags'], author = auth, quote = element['quote']).save()
 
-#for element in quotes:
-#    Quotes_noref(tags = element['tags'], author = element['author'], quote = element['quote']).save()
