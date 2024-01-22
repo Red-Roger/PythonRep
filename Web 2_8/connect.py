@@ -21,4 +21,4 @@ domain = config.get('DB', 'domain')
 #connect(host=f"""mongodb+srv://RedRoger:7778513@cluster0.drdi5wc.mongodb.net/?retryWrites=true&w=majority""", ssl=True)
 connect(host=f"""mongodb+srv://{mongo_user}:{mongodb_pass}@{domain}/{db_name}?retryWrites=true&w=majority""", ssl=True)
 
-time.sleep(3)
+time.sleep(1)
