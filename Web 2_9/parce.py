@@ -18,9 +18,12 @@ def parse_data():
         soup = BeautifulSoup(html_doc.content, 'html.parser')
         quots = soup.find_all('div', attrs={'class': 'quote'})
         for quot in quots:
+
+            soup_about = quot.find('a')['href']
+
             tgs = []
             dict_quotes = {}
-            dict_authors = {}
+
             author = quot.find('small').text
             say = quot.find('span', attrs={'class': 'text'}).text.strip('\u201c\u201d')
             tags=quot.find_all('a', attrs={'class': 'tag'})
@@ -33,16 +36,31 @@ def parse_data():
             dict_quotes['quote'] = say
             to_file_quotes.append(dict_quotes)
 
-            dict_authors['fullname'] = author
-            dict_authors['born_date'] = 'unknown'
-            dict_authors['born_location'] = 'unknown'
-            dict_authors['description'] = 'unknown'
-            to_file_authors.append(dict_authors)
+            to_file_authors.append(parse_about_data(soup_about))
 
     return to_file_authors, to_file_quotes
 
-    
+def parse_about_data(about_url):
+    url = 'http://quotes.toscrape.com/' + about_url
+    html_doc = requests.get(url)
+    if html_doc.status_code == 200:
+        dict_authors = {}
 
+        soup = BeautifulSoup(html_doc.content, 'html.parser')
+        quots = soup.find('div', attrs={'class': 'author-details'})
+        
+        author = quots.find('h3', attrs={'class': 'author-title'}).text
+        born_date = quots.find('span', attrs={'class': 'author-born-date'}).text
+        born_location = quots.find('span', attrs={'class': 'author-born-location'}).text
+        description = quots.find('div', attrs={'class': 'author-description'}).text.strip('\n').strip()
+        
+        dict_authors['fullname'] = author
+        dict_authors['born_date'] = born_date
+        dict_authors['born_location'] = born_location
+        dict_authors['description'] = description
+    
+    return dict_authors
+        
 
 if __name__ == '__main__':
     to_file_authors, to_file_quotes = parse_data()
