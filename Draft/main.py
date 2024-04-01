@@ -1,39 +1,61 @@
-from sqlalchemy import create_engine, Integer, String, ForeignKey, select, Text, and_, desc, func
-from sqlalchemy.orm import declarative_base, sessionmaker, Mapped, mapped_column, relationship
+class Bird:
+    def __init__(self, name):
+        self.name = name
 
-engine = create_engine('sqlite:///:memory:', echo=False)  
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+    def fly(self):
+        return f"{self.name} bird can fly"
 
-Base = declarative_base()
+    def walk(self):
+        return f"{self.name} bird can walk"
 
-
-class User(Base):
-    __tablename__ = 'users'
-    id: Mapped[int] = mapped_column(primary_key=True)
-    fullname: Mapped[str] = mapped_column(String)
+    def eat(self):
+        return "It eats various foods"
 
 
-class Post(Base):
-    __tablename__ = 'posts'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
-    body: Mapped[str] = mapped_column(Text, nullable=False)
-    user_id: Mapped[str] = mapped_column('user_id', Integer, ForeignKey('users.id'))
-    user: Mapped['User'] = relationship(User)
+class FlyingBird(Bird):
+    def __init__(self, name, ration="grains"):
+        super().__init__(name)
+        self.ration = ration
+
+    def eat(self):
+        return f"It eats mostly {self.ration}"
+
+    def __str__(self):
+        return f"{self.name} bird can walk and fly"
 
 
-Base.metadata.create_all(engine)
+
+class NonFlyingBird(Bird):
+    def __init__(self, name, ration="fish"):
+        super().__init__(name)
+        self.ration = ration
+
+    def swim(self):
+        return f"{self.name} bird can swim"
+
+    def eat(self):
+        return "It eats mostly fish"
+
+    def fly(self):
+        raise AttributeError(f"'{self.name}' object has no attribute 'fly'")
 
 
-if __name__ == '__main__':
-    names = ['Crystal Najera', 'Shaun Beck', 'Kathrin Reinhardt']
-    for name in names:
-        user = User(fullname=name)
-        session.add(user)
-    session.commit()
+class SuperBird(FlyingBird, NonFlyingBird):
+    def __init__(self, name):
+        super().__init__(name)
 
-    stmt = select(User)
-    result = session.execute(stmt)
-    for user in result.scalars():
-        print(user.id, user.fullname)
+    def eat(self):
+        return super().eat()
+
+    def __str__(self):
+        capabilities = ", ".join([method.split()[0] for method in dir(self) if callable(getattr(self, method)) and not method.startswith("__")])
+        return f"{self.name} bird can {capabilities}"
+
+
+
+p = NonFlyingBird("Penguin", "fish")
+print (p.swim())
+"Penguin bird can swim"
+
+print (p.eat())
+"It eats mostly fish"
